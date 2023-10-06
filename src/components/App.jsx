@@ -1,6 +1,6 @@
 // Fichero src/components/App.jsx
-import '../scss/styles/_app.scss';
-import '../scss/core/_reset.scss';
+import '../styles/App.scss';
+
 
 
 function App() {
