@@ -3,12 +3,10 @@ import '../styles/App.scss';
 
 function App() {
   let [numberOfErrors, setNumberOfErrors] = useState(0);
-  const paintErrors = () => {
-    for (let i = 0; i < 13; i++) {
-      const error = numberOfErrors[i];
-      setNumberOfErrors(numberOfErrors);
-    }
-    console.log(paintErrors())
+  const handleClick = (event) => {
+    event.preventDefault();
+    setNumberOfErrors(numberOfErrors + 1);
+    console.log(numberOfErrors);
   };
   return (
     <>
@@ -20,7 +18,7 @@ function App() {
           <section>
             <div className='solution'>
               <h2 className='title'>Solución:</h2>
-              <button onClick={paintErrors}>Incrementar</button>
+              <button onClick={handleClick}>Incrementar</button>
               <ul className='letters'>
                 <li className='letter'>k</li>
                 <li className='letter'>a</li>
@@ -58,7 +56,7 @@ function App() {
               />
             </form>
           </section>
-          <section className={`dummy error-${numberOfErrors}`}>
+          <section className={"dummy error-" + numberOfErrors}> 
             <span className='error-13 eye'></span>
             <span className='error-12 eye'></span>
             <span className='error-11 line'></span>
