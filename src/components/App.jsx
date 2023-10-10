@@ -4,10 +4,29 @@ import '../styles/App.scss';
 function App() {
   let [numberOfErrors, setNumberOfErrors] = useState(0);
   const handleClick = (event) => {
-    event.preventDefault();
     setNumberOfErrors(numberOfErrors + 1);
     console.log(numberOfErrors);
   };
+
+  const [lastLetter, setLastLetter] = useState('');
+  const handleChange = (event) => {
+    setLastLetter(event.target.value);
+    console.log(lastLetter);
+    const inputLetter = event.target.value;
+    const validLetterRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+$/;
+    if (validLetterRegex.test(inputLetter)) {
+      setLastLetter(inputLetter);
+    } else {
+      console.log(`La letra "${inputLetter}" no es válida.`);
+    }
+    //   if (event.which == 13 || event.keyCode == 13) {
+
+    // }
+  };
+  const handleSumbitForm = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <>
       <div className='page'>
@@ -42,7 +61,7 @@ function App() {
                 <li className='letter'>x</li>
               </ul>
             </div>
-            <form className='form'>
+            <form onSubmit={handleSumbitForm}>
               <label className='title' htmlFor='last-letter'>
                 Escribe una letra:
               </label>
@@ -53,10 +72,11 @@ function App() {
                 type='text'
                 name='last-letter'
                 id='last-letter'
+                onChange={handleChange}
               />
             </form>
           </section>
-          <section className={"dummy error-" + numberOfErrors}> 
+          <section className={'dummy error-' + numberOfErrors}>
             <span className='error-13 eye'></span>
             <span className='error-12 eye'></span>
             <span className='error-11 line'></span>
