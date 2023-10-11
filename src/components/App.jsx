@@ -3,11 +3,35 @@ import '../styles/App.scss';
 
 function App() {
   let [numberOfErrors, setNumberOfErrors] = useState(0);
+  const [word, setWord] = useState("katakroker");
+  const[userLetters, setUserLetters] = useState ([]);
+
+
+
   const handleClick = (event) => {
     event.preventDefault();
     setNumberOfErrors(numberOfErrors + 1);
     console.log(numberOfErrors);
   };
+  const renderSolutionLetters = () => {
+    const wordLetters = word.split('');
+    return wordLetters.map((letter, index) => {
+      const isLetterInUserLetters= userLetters.includes(letter);
+      return( 
+      <li className="letter" key={index}>
+        {isLetterInUserLetters ? letter : ''}
+        </li>
+      );
+    });
+  };
+  const renderErrorLetters = () => {
+
+    
+  };
+
+
+
+
   return (
     <>
       <div className='page'>
@@ -20,6 +44,7 @@ function App() {
               <h2 className='title'>Solución:</h2>
               <button onClick={handleClick}>Incrementar</button>
               <ul className='letters'>
+              {renderSolutionLetters()}
                 <li className='letter'>k</li>
                 <li className='letter'>a</li>
                 <li className='letter'></li>
