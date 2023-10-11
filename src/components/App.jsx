@@ -9,10 +9,29 @@ function App() {
 
 
   const handleClick = (event) => {
-    event.preventDefault();
     setNumberOfErrors(numberOfErrors + 1);
     console.log(numberOfErrors);
   };
+
+  const [lastLetter, setLastLetter] = useState('');
+  const handleChange = (event) => {
+    setLastLetter(event.target.value);
+    console.log(lastLetter);
+    const inputLetter = event.target.value;
+    const validLetterRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+$/;
+    if (validLetterRegex.test(inputLetter)) {
+      setLastLetter(inputLetter);
+    } else {
+      console.log(`La letra "${inputLetter}" no es válida.`);
+    }
+    //   if (event.which == 13 || event.keyCode == 13) {
+
+    // }
+  };
+  const handleSumbitForm = (event) => {
+    event.preventDefault();
+  };
+
   const renderSolutionLetters = () => {
     const wordLetters = word.split('');
     return wordLetters.map((letter, index) => {
@@ -45,29 +64,16 @@ function App() {
               <button onClick={handleClick}>Incrementar</button>
               <ul className='letters'>
               {renderSolutionLetters()}
-                <li className='letter'>k</li>
-                <li className='letter'>a</li>
-                <li className='letter'></li>
-                <li className='letter'>a</li>
-                <li className='letter'>k</li>
-                <li className='letter'>r</li>
-                <li className='letter'></li>
-                <li className='letter'>k</li>
-                <li className='letter'>e</li>
-                <li className='letter'>r</li>
               </ul>
             </div>
             <div className='error'>
               <h2 className='title'>Letras falladas:</h2>
               <ul className='letters'>
-                <li className='letter'>f</li>
-                <li className='letter'>q</li>
-                <li className='letter'>h</li>
-                <li className='letter'>p</li>
-                <li className='letter'>x</li>
+              {renderErrorLetters()}
+                
               </ul>
             </div>
-            <form className='form'>
+            <form onSubmit={handleSumbitForm}>
               <label className='title' htmlFor='last-letter'>
                 Escribe una letra:
               </label>
@@ -78,10 +84,11 @@ function App() {
                 type='text'
                 name='last-letter'
                 id='last-letter'
+                onChange={handleChange}
               />
             </form>
           </section>
-          <section className={"dummy error-" + numberOfErrors}> 
+          <section className={'dummy error-' + numberOfErrors}>
             <span className='error-13 eye'></span>
             <span className='error-12 eye'></span>
             <span className='error-11 line'></span>
