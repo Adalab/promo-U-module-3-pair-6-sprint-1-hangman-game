@@ -1,57 +1,80 @@
-import { useState } from 'react';
 import '../styles/App.scss';
+import { useEffect, useState } from 'react';
 
 function App() {
-  let [numberOfErrors, setNumberOfErrors] = useState(0);
-  const [word, setWord] = useState("katakroker");
-  const[userLetters, setUserLetters] = useState ([]);
-
-
-
-  const handleClick = (event) => {
-    setNumberOfErrors(numberOfErrors + 1);
-    console.log(numberOfErrors);
-  };
-
+  useEffect(() => {
+    fetch('https://dev.adalab.es/api/random/word')
+      .then((response) => response.json())
+      .then((data) => {
+        setWord(data.word);
+      });
+  }, []);
+  //funciones, variables, handles
   const [lastLetter, setLastLetter] = useState('');
+  const [word, setWord] = useState('pepino');
+  const [userLetters, setUserLetters] = useState([]);
+
+  /******5. Pintando el muñeco******/
+
+  const calculateErrors = () => {
+    // Calcular el número de errores
+    const errorCount = userLetters.filter(
+      (letter) => !word.includes(letter)
+    ).length;
+    return errorCount;
+  };
+
+  const renderDummyClass = () => {
+    const errorCount = calculateErrors();
+    return `dummy error-${errorCount}`;
+  };
+
   const handleChange = (event) => {
-    setLastLetter(event.target.value);
-    console.log(lastLetter);
     const inputLetter = event.target.value;
-    const validLetterRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+$/;
-    if (validLetterRegex.test(inputLetter)) {
+
+    const isValidLetter = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+$/.test(inputLetter);
+
+    if (isValidLetter || inputLetter === '') {
       setLastLetter(inputLetter);
+
+      /*2. Modificando un array del estado. Estado arrriba*/
+      setUserLetters([...userLetters, inputLetter]);
     } else {
-      console.log(`La letra "${inputLetter}" no es válida.`);
+      console.log('La letra ingresada no es válida.');
     }
-    //   if (event.which == 13 || event.keyCode == 13) {
-
-    // }
-  };
-  const handleSumbitForm = (event) => {
-    event.preventDefault();
   };
 
+  /****1. Pintando los guiones de la solución (fase 1) */
   const renderSolutionLetters = () => {
     const wordLetters = word.split('');
+
+    /***3. Pintando los guiones de la solución (fase 2) */
+
     return wordLetters.map((letter, index) => {
-      const isLetterInUserLetters= userLetters.includes(letter);
-      return( 
-      <li className="letter" key={index}>
-        {isLetterInUserLetters ? letter : ''}
+      const isLetterInUserLetters = userLetters.includes(letter);
+      return (
+        <li className='letter' key={index}>
+          {isLetterInUserLetters ? letter : ''}
         </li>
       );
     });
   };
-  const renderErrorLetters = () => {
 
-    
+  /****4. Pintando las letras falladas*** */
+  const renderErrorLetters = () => {
+    // Filtrar las userLetters que no existen en la palabra
+    const errorLetters = userLetters.filter((letter) => !word.includes(letter));
+
+    // Recorrer las letras erróneas y retornar un <li> para cada una
+    return errorLetters.map((letter, index) => (
+      <li className='letter' key={index}>
+        {letter}
+      </li>
+    ));
   };
 
-
-
-
   return (
+    //html
     <>
       <div className='page'>
         <header>
@@ -61,19 +84,14 @@ function App() {
           <section>
             <div className='solution'>
               <h2 className='title'>Solución:</h2>
-              <button onClick={handleClick}>Incrementar</button>
-              <ul className='letters'>
-              {renderSolutionLetters()}
-              </ul>
+
+              <ul className='letters'>{renderSolutionLetters()}</ul>
             </div>
             <div className='error'>
               <h2 className='title'>Letras falladas:</h2>
-              <ul className='letters'>
-              {renderErrorLetters()}
-                
-              </ul>
+              <ul className='letters'>{renderErrorLetters()}</ul>
             </div>
-            <form onSubmit={handleSumbitForm}>
+            <form className='form'>
               <label className='title' htmlFor='last-letter'>
                 Escribe una letra:
               </label>
@@ -84,11 +102,12 @@ function App() {
                 type='text'
                 name='last-letter'
                 id='last-letter'
+                value={lastLetter}
                 onChange={handleChange}
               />
             </form>
           </section>
-          <section className={'dummy error-' + numberOfErrors}>
+          <section className={renderDummyClass()}>
             <span className='error-13 eye'></span>
             <span className='error-12 eye'></span>
             <span className='error-11 line'></span>
